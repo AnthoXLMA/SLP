@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Globetrotter</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <%= favicon_pack_tag('globe_icon.webp') %>
+    <%= javascript_pack_tag 'sentry', 'data-turbolinks-track': 'reload' if Rails.env.production? %>
+    <%= stylesheet_pack_tag "zoom" %>
+  </head>
+
+  <body> 
+    <%= yield %> 
+    <%= javascript_pack_tag 'zoom' %>
+  </body>
+</html>

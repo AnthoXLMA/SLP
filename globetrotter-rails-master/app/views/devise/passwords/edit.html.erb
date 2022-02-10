@@ -1,0 +1,30 @@
+  <div class="form column">
+    <div class="ui segment">
+      <h2 class="ui header"><%= t('.change_your_password') %></h2>
+
+      <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: %W[ui large form] }) do |f| %>
+      <div class="ui error message">
+        <%= render "devise/shared/error_messages", resource: resource %>
+      </div>
+
+      <%= f.hidden_field :reset_password_token %>
+
+      <div class="field devise left">
+        <%= f.label :password, t('.new_password') %>
+        <%= f.password_field :password, autofocus: true, autocomplete: "new-password" %>
+      </div>
+
+      <div class="field devise left">
+        <%= f.label :password_confirmation, t('.confirm_new_password') %><br />
+        <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit t('.change_my_password'), class: %W[ui primary submit button] %>
+      </div>
+      <% end %>
+    </div>
+    <div class="ui message left devise">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>

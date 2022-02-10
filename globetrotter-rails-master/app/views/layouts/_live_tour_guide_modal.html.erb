@@ -1,0 +1,27 @@
+<div class="ui modal" id="live_event_modal">
+  <i class="close icon"></i>
+  <div class="header">
+    <%= t('application.live_event') %>
+  </div>
+  <div class="image content">
+    <div class="ui image">
+      <%= tour_image(event.tour, [450, 300]) %>
+    </div>
+    <div class="description">
+      <div class="ui header"><%= t('application.tour_is_live') %></div>
+      <p><%= t('application.guide_tour_scheduled_is_live', date: l(event.date, format: :long_with_day)) %></p>
+      <% if event.date < Time.now.round %>
+        <p><%= t('application.guide_tour_still_live', ago: distance_of_time_in_words_to_now(event.date)) %></p>
+      <% else %>
+        <p><%= t('application.guide_tour_about_to_start', in: distance_of_time_in_words_to_now(event.date)) %></p>
+      <% end %>
+      <p>
+    </div>
+  </div>
+  <div class="actions">
+    <%= link_to guide_event_path(event), class: "ui positive right labeled icon button" do %>
+      <%= t('application.guide_join_now') %>
+      <i class="checkmark icon"></i>
+    <% end %>
+  </div>
+</div>

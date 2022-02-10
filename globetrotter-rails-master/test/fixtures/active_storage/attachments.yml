@@ -1,0 +1,24 @@
+tour_image_attachment_one:
+  name: image
+  record: tour_one (Tour)
+  blob: tour_image_attachment_blob_one
+tour_image_attachment_two:
+  name: image
+  record: tour_two (Tour)
+  blob: tour_image_attachment_blob_two
+tour_thumbnail_attachment_one:
+  name: thumbnail
+  record: tour_one (Tour)
+  blob: tour_image_attachment_blob_one
+tour_thumbnail_attachment_two:
+  name: thumbnail
+  record: tour_two (Tour)
+  blob: tour_image_attachment_blob_two
+user_image_attachment_one:
+  name: image
+  record: user_one (User)
+  blob: tour_user_attachment_blob_one
+user_image_attachment_two:
+  name: image
+  record: user_two (User)
+  blob: tour_user_attachment_blob_two

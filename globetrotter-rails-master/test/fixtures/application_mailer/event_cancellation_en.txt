@@ -1,0 +1,11 @@
+Hello user_one!
+
+We sorry to inform you that your tour TestTour1 scheduled on 2022-01-28 03:00:00 UTC has been cancelled.
+
+You can check the new dates for this tour at http://localhost:3000/en/tours/1048056776. It is currently planned on:
+ - Fri, February 04 at 6:00pm
+ - Wed, February 09 at 12:00am
+
+
+© 2021 theGlobetrotters.live. All rights reserved.
+theGlobetrotters.live SAS - 11 rue Guilloud 69003 Lyon

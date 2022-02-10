@@ -1,0 +1,33 @@
+{{ define "traefik_dynamic_conf.yaml" }}
+http:
+  middlewares:
+    redirect-to-www:
+      redirectRegex:
+        regex: "^https://{{ .Values.app.domain }}"
+        replacement: "https://{{ .Values.app.hostname }}"
+        permanent: true
+  routers:
+    # Define a connection between requests and services
+    to-rails:
+      tls:
+        certResolver: myresolver
+        domains:
+        - main: theglobetrotters.live
+          sans:
+          - www.theglobetrotters.live
+      rule: "Host(`{{ .Values.app.hostname }}`, `{{ .Values.app.domain }}`)"
+       # If the rule matches, applies the middleware
+      entryPoints:
+        - "websecure"
+      # If the rule matches, forward to the service (declared below)
+      service: rails
+      middlewares:
+      - redirect-to-www
+
+  services:
+    # Define how to reach an existing service on our infrastructure
+    rails:
+      loadBalancer:
+        servers:
+        - url: http://rails:3000
+{{ end }}

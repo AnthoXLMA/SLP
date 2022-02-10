@@ -1,0 +1,36 @@
+<%= form_with(model: @event_registration) do |f| %>
+<div class="ui card">
+  <div class="content">
+    <div class="header"><%= t("tour.upcoming_events") %></div>
+  </div>
+  <% if @tour.future_events.any? %>
+  <div class="content left aligned">
+    <h4 class="ui sub header">Dates</h4>
+    <div class="ui small feed">
+      <div class="field">
+        <%= f.collection_radio_buttons :event_id, @tour.future_events.first(5), :id, :date do |b| %>
+        <div class="ui radio checkbox">
+          <%= b.radio_button %>
+          <label><%= l(b.text.to_datetime, format: :long_with_day) %></label>
+        </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="extra content">
+    <%= f.submit t('tour.register'), class: %W[ui primary submit button] %>
+    <a class="ui button" href="<%= event_path(@tour.events.first) %>" data-turbolinks="false"><%= t('tour.join_event') %></a>
+    <% if current_user&.guide? || current_user&.admin? %>
+      <%= link_to t('tour.schedule_event'), new_tour_event_path(@tour) %>
+    <% end %>
+  </div>
+  <% else %>
+  <div class="content left aligned">
+    <%= t('tour.no_event') %>
+  </div>
+  <div class="extra content">
+    <%= f.submit t('tour.interest'), class: %W[ui submit button] %>
+  </div>
+  <% end %>
+</div>
+<% end %>

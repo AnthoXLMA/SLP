@@ -1,0 +1,62 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: database-backup
+  labels:
+    {{- include "theglobetrotters.database-backup.labels" . | nindent 4 }}
+spec:
+  schedule: "0 1 * * *" # every day at 1AM
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          annotations:
+            checksum/postgres_secret: {{ include (print $.Template.BasePath "/20_postgres_secret.yaml") . | sha256sum }}
+        spec:
+          {{- with .Values.imagePullSecrets }}
+          imagePullSecrets:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          serviceAccountName: {{ include "theglobetrotters.serviceAccountName" . }}
+          securityContext:
+            {{- toYaml .Values.podSecurityContext | nindent 12 }}
+          containers:
+          - name: postgres
+            securityContext:
+              {{- toYaml .Values.securityContext | nindent 14 }}
+            image: "{{ .Values.image.postgres }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            command:
+            - "/bin/sh"
+            - "-c"
+            - "/usr/bin/pg_dump --host=postgres --username=postgres --dbname=production --format=directory --file=/backup/$(date --iso-8601=seconds)"
+            volumeMounts:
+            - name: database-backup-volume
+              mountPath: "/backup" 
+            resources:
+              {{- toYaml .Values.resources.databasebackup | nindent 14 }}
+          restartPolicy: OnFailure
+          volumes:
+          - name: database-backup-volume
+            persistentVolumeClaim:
+              claimName: azurefile-database-backup
+          {{- with .Values.nodeSelector }}
+          nodeSelector:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.affinity }}
+          affinity:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+          {{- with .Values.tolerations }}
+          tolerations:
+            {{- toYaml . | nindent 8 }}
+          {{- end }}
+
+          

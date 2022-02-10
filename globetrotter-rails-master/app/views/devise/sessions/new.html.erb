@@ -1,0 +1,33 @@
+  <div class="form column">
+    <div class="ui segment">
+      <h2 class="ui header"><%= t('.sign_in') %></h2>
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: %W[ui large form] }) do |f| %>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="user icon"></i>
+            <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "E-mail address" %>
+          </div>
+        </div>
+        <div class="field">
+          <div class="ui left icon input">
+            <i class="lock icon"></i>
+            <%= f.password_field :password, autocomplete: "password", placeholder: "Password" %>
+          </div>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="field" style="text-align: left;">
+            <div class="ui checkbox">
+              <%= f.check_box :remember_me, class: 'hidden' %>
+              <%= f.label :remember_me %>
+            </div>
+          </div>
+        <% end %>
+
+        <%= f.submit t('.sign_in'), class: %W[ui fluid large submit button] %>
+      <% end %>
+    </div>
+    <div class="ui message left devise">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>

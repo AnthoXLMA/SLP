@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "theglobetrotters.fullname" . }}
+  annotations:
+    service.beta.kubernetes.io/azure-dns-label-name: {{ .Values.app.name }}
+  labels:
+    {{- include "theglobetrotters.traefik.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: 443
+      targetPort: 8443
+      protocol: TCP
+      name: https
+    - port: 80
+      targetPort: 8081
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "theglobetrotters.traefik.selectorLabels" . | nindent 4 }}

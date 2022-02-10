@@ -1,0 +1,7 @@
+<body>
+<h1><%= t('mail.event_about_to_start.event_about_to_start', date: l(@event.date, format: :long_with_day))%></h1>
+<p>
+  <%= t('mail.event_about_to_start.join_with_credentials') %>
+  <%= JSON.pretty_generate(@event.zoom_meeting_details).gsub("\n", "<br>\n") %>
+</p>
+</body>

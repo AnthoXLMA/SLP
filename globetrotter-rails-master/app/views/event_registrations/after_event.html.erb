@@ -1,0 +1,24 @@
+<div class="page_with left_margin">
+  <div class="content">
+    <div class="small column">
+      <img class="ui left floated image rounded" height="200" src="<%= asset_pack_url 'media/images/ess.webp' %>">
+      <h2 class="ui header">
+        <div class="content">
+          <%= t('events.leave_a_tip') %>
+        </div>
+      </h2>
+      <p style="margin-bottom: 100px; margin-top: 50px;"><%= t('events.ess_description_html') %></p>
+    </div>
+    <div class="large column">
+      <%= t('events.pay_what_you_can') %>
+      <br>
+      <a class="ui large button" style="margin-top: 20px; margin-bottom: 20px;" href="<%= tip_event_registration_path(@event_registration) %>"><%= t('events.contribute') %></a><br>
+      <%= t('events.cannot_contribute_description_html') %><br><br>
+    </div>
+    <div class="large column">
+      <%= t('events.leave_a_comment_description', guide_name: @event_registration.event.tour.guide.user.firstname) %><br><br>
+      <a style="margin-top: 20px; margin-bottom: 20px;" class="ui" href="<%= tour_path(@event_registration.event.tour) %>"><%= t('events.leave_a_comment') %></a>
+    </div>
+  </div>
+</div>
+  

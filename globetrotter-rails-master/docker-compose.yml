@@ -1,0 +1,69 @@
+version: '2'
+services:
+        rails-setup:
+                image: theglobetrottersliveregistry.azurecr.io/globetrotter-rails-build:latest
+                command: ['/bin/sh', '-c', 'RAILS_ENV=production bundle exec rake utils:wait_for_pg && bundle exec rake db:prepare']
+                environment:
+                        - GIT_SHA1=${GIT_SHA1}
+                        - DOCKER_POSTGRES_HOST=postgres
+                        - DOCKER_POSTGRES_PASSWORD=${DOCKER_POSTGRES_PASSWORD}
+                        - DOCKER_POSTGRES_SSL=allow
+                        - DOCKER_POSTGRES_USER=postgres
+        rails:
+                image: theglobetrottersliveregistry.azurecr.io/globetrotter-rails:latest
+                ports:
+                        - '8000:3000'
+                environment:
+                        - DOCKER_POSTGRES_HOST=postgres
+                        - DOCKER_POSTGRES_PASSWORD=${DOCKER_POSTGRES_PASSWORD}
+                        - DOCKER_POSTGRES_SSL=allow
+                        - DOCKER_POSTGRES_USER=postgres
+                        - RAILS_ENV=production
+                        - RAILS_LOG_TO_STDOUT=1
+                        - RAILS_SERVE_STATIC_FILES=0
+                volumes:
+                        - storage_volume:/usr/app/storage
+                restart: always
+                labels:
+                        - "traefik.enable=true"
+                        - "traefik.http.routers.rails.rule=Host(`www.theglobetrotters.live`) || Host(`localhost`)"
+                        - "traefik.http.routers.rails.entrypoints=websecure"
+                        - "traefik.http.routers.rails.tls.certresolver=myresolver"
+        postgres:
+                image: postgres:12
+                environment:
+                        - PGDATA=/var/lib/postgresql/data/pgdata
+                        - POSTGRES_PASSWORD=${DOCKER_POSTGRES_PASSWORD}
+                volumes:
+                        - postgres_volume:/var/lib/postgresql/data
+                ports:
+                        - 5432:5432
+                restart: always
+        webdriver_chrome:
+                image: selenium/standalone-chrome-debug
+                ports:
+                        - 4444:4444
+        traefik:
+                image: traefik:latest
+                restart: always
+                command:
+                        - "--api.insecure=true" # enable dashboard on port 8080
+                        - "--log.level=DEBUG"
+                        - "--providers.docker=true"
+                        - "--providers.docker.exposedbydefault=false"
+                        - "--entrypoints.websecure.address=:443"
+                        - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+                        - "--certificatesresolvers.myresolver.acme.email=admin@globetrotters.live"
+                        - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+                ports:
+                        - 443:443
+                        - 8080:8080
+                volumes:
+                        - /var/run/docker.sock:/var/run/docker.sock:ro
+                        - letsencrypt_volume:/letsencrypt
+
+volumes:
+        postgres_volume:
+        storage_volume:
+        letsencrypt_volume:
+

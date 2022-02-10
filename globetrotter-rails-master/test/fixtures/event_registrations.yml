@@ -1,0 +1,24 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+event_registration_one:
+  event: event_one
+  user: user_one
+  visited_date: <%= DateTime.now.utc.midnight - 2.days + 3.hours %>
+
+event_registration_two:
+  event: event_two
+  user: user_two
+
+event_registration_event_one_user_two:
+  event: event_one
+  user: user_two
+  visited_date: <%= DateTime.now + 5.minutes %>
+
+event_registration_three:
+  event: event_three
+  user: user_one
+
+event_registration_threeb:
+  event: event_three
+  user: user_two
+

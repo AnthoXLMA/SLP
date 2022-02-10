@@ -1,0 +1,7 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  zoom_user_id: 'zoom_user_id1'
+
+two:
+  zoom_user_id: 'zoom_user_id2'

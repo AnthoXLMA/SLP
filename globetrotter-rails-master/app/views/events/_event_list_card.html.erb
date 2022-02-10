@@ -1,0 +1,52 @@
+<div class="ui card">
+  <div class="content">
+    <div class="header"><%= t("guide.upcoming_tours") %></div>
+  </div>
+  <% if events.any? %>
+  <% events.each do |eg| %>
+    <div class="content ui middle aligned divided list">
+      <div class="item">
+        <div class="right floated content">
+          <% if eg.live? %>
+            <%= link_to t('tour.live'), event_path(eg), class: "ui red tertiary button" %>
+          <% else %>
+            <% registration = user_event_registrations_by_event_id[eg.id] %>
+            <% if registration %>
+              <%= form_with(model: registration, method: 'delete') do |f| %>
+                <%= f.submit t('tour.unregister'), class: "ui tertiary button" %>
+              <% end %>
+            <% else %>
+              <%= form_with(model: EventRegistration.new(event: eg)) do |f| %>
+                <%= f.hidden_field :event_id, id: "event_id_#{eg.id}" %>
+                <%= f.submit t('tour.register'), class: "ui tertiary button" %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+        <div class="content next_tours">
+          <% if show_title %>
+            <%= link_to eg.tour.title, tour_path(eg.tour), class: "header title" %>
+            <div class="meta date"><span class="date"><%= l(eg.date, format: :long_with_day) %></span></div>
+          <% else %>
+            <div class="header title"><%= l(eg.date.to_date, format: :long_with_day) %></div>
+            <div class="meta date"><span class="date"><%= l(eg.date, format: :time_only) %></span></div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <% end %>
+  <% else %>
+    <div class="content ui middle aligned divided list">
+      <div class="item">
+        <div class="right floated content">
+          <%= form_with(model: EventRegistration.new(user: current_user)) do |f| %>
+            <%= f.submit t('tour.interest'), class: "ui tertiary button" %>
+          <% end %>
+        </div>
+        <div class="content next_tours">
+          <%= t('tour.no_event') %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

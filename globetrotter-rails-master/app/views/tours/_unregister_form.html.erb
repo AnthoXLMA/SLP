@@ -1,0 +1,13 @@
+<%= form_with(model: @event_registration, method: 'delete') do |f| %>
+<div class="ui card">
+  <div class="center aligned content">
+    <div class="centered header"><%= t("tour.registered_events") %></div>
+  </div>
+  <div class="center aligned content">
+    <%= l(@event_registration.event.date, format: :long_with_day) %>
+  </div>
+  <div class="center aligned extra content">
+    <%= f.submit t('tour.unregister'), class: %W[ui submit button] %>
+  </div>
+</div>
+<% end %>

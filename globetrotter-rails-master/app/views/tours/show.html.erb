@@ -1,0 +1,70 @@
+<% if current_user&.tour_admin?(@tour) %>
+<div class="ui segment container raised">
+  <div class="column">
+    <div class="ui header"><%= t('tour.admin_panel') %></div>
+    <p><%= link_to t('tour.schedule_event'), new_tour_event_path(@tour) %></p>
+  </div>
+</div>
+<% end %>
+<div class="page_with right_margin">
+  <div class="content">
+    <div class="large column">
+      <%= tour_image(@tour, [450, 300], class: 'ui left floated large image rounded') %>
+      <h2 class="ui header">
+        <% if !@tour.published %>
+          <i class="eye slash outline icon"></i> -
+        <% end %>
+        <%= @tour.title %>
+        <% if current_user&.tour_admin?(@tour) %>
+          <%= link_to edit_tour_path(@tour) do %>
+            <i class="edit icon"></i>
+          <% end %>
+        <% end %>
+        <div class="sub header"><%= @tour.subtitle %></div>
+      </h2>
+      <div class="content">
+        <p><%= @tour.short_description %></p>
+        <div class="sub header"><i class="stopwatch icon"></i><%= t("duration.#{@tour.duration.iso8601}") %></div>
+        <div class="sub header"><i class="microphone alternate icon"></i><%= Tour::LANGUAGE[@tour.language.to_sym] %></div>
+      </div>
+    </div>
+  </div>
+  <div class="margin registration panel">
+    <%= render 'events/event_list_card', show_title: false, events: @tour.future_events.first(5), user_event_registrations_by_event_id: @user_event_registrations_by_event_id %>
+  </div>
+  <div class="content">
+    <h3 class="ui segment site-section"><%= t('tours.about_the_tour') %></h3>
+    <div class="small column">
+      <% (@tour.description || '').split("\n").each do |line| %>
+      <p><%= line %></p>
+      <% end %>
+    </div>
+    <% if @tour.guide %>
+    <h3 class="ui segment site-section"><%= t('tours.meet_your_guide') %></h3>
+    <div class="small column">
+      <%= guide_image(@tour.guide, [150, 150], class: 'ui image left floated circular small') %>
+      <h4 class="ui header"><%= @tour.guide.user.firstname %></h4>
+      <% (@tour.guide&.short_description || '').split("\n").each do |line| %>
+        <p><%= line %></p>
+      <% end %>
+      <p><%= link_to t('tours.know_more', guide: @tour.guide.user.firstname, his_her: @tour.guide.user.man? ? t('tours.his') : t('tours.her')), guide_path(@tour.guide) %></p>
+    </div>
+    <% end %>
+    <h3 class="ui segment site-section"><%= t('tours.more_tours') %></h3>
+    <div class="large column">
+      <%= render 'tours/tours', items: @tours %>
+    </div>
+    <% if @tour.comments_count > 0 || @comment %>
+    <h3 class="ui segment site-section" id="comments">Comments</h3>
+    <div class="large column">
+      <div class="ui comments">
+        <% if @comment&.new_record? %>
+        You've visited this tour on <%= l(@comment.event_registration.event.date, format: :long_with_day) %>. Feel free to share your experience.
+        <%= render 'comments/form', comment: @comment, visible: true %>
+        <% end %>
+        <%= render 'comments/collection', collection: @tour.comments %>
+      </div>
+    </div>
+    <% end %>
+  </div>
+</div>

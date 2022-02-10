@@ -1,0 +1,258 @@
+# frozen_string_literal: true
+
+# Add your own tasks in files placed in lib/tasks ending in .rake,
+# for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
+
+require_relative 'config/application'
+
+Rails.application.load_tasks
+
+RAILS_MASTER_KEY = ENV.fetch('RAILS_MASTER_KEY') { File.read('config/master.key').strip }
+GIT_SHA1 = ENV['GIT_SHA1'] || ENV['GITHUB_SHA'] || `git rev-parse --short HEAD`.strip
+SENTRY_DSN = Rails.application.credentials.sentry[:dsn]
+
+namespace 'build' do
+  task validate: 'db:create' do
+    sh 'bin/rails test --fail-fast'
+  end
+end
+
+namespace 'docker-compose' do
+  task :_set_env do
+    prod_env = <<~EOS
+      GIT_SHA1=#{GIT_SHA1}
+      DOCKER_POSTGRES_PASSWORD=#{Rails.application.credentials.postgres[:password]}
+    EOS
+    File.write('.env', prod_env)
+  end
+
+  desc 'Seed database using docker-compose'
+  task seed: [:_set_env, 'azure:docker_build'] do
+    Rake::Task['azure:docker_build'].invoke unless ENV['RAKE_WITHOUT_DEPENDENCIES']
+    sh 'docker-compose run --rm rails-setup rake db:migrate db:seed'
+  end
+
+  desc 'Build using docker-compose'
+  task rake_azure_send_asset: [:_set_env] do
+    Rake::Task['azure:docker_build'].invoke unless ENV['RAKE_WITHOUT_DEPENDENCIES']
+    sh 'docker-compose run --rm rails-setup rake azure:_send_asset'
+  end
+
+  desc 'Deploy database using docker-compose and wait for the database to be up and running'
+  task up_db: [:_set_env] do
+    sh 'docker-compose up -d postgres'
+    100.times do
+      break if system('docker-compose logs postgres | grep -cq listening')
+
+      puts 'db not yet ready'
+      sleep 2
+    end
+    puts 'db ready'
+  end
+
+  desc 'Run unit tests using docker-compose'
+  task rake_build_validate: %i[_set_env up_db] do
+    Rake::Task['azure:docker_build'].invoke unless ENV['RAKE_WITHOUT_DEPENDENCIES']
+    sh 'docker-compose run --rm rails-setup rake build:validate'
+  end
+
+  desc 'Deploy using docker-compose'
+  task up: [:_set_env] do
+    sh 'docker-compose up -d'
+  end
+end
+
+namespace :azure do
+  desc 'build and publish assets'
+  task asset_setup: 'docker-compose:rake_azure_send_asset'
+
+  task :_send_asset do
+    asset_container_name = 'globetrotters-static'
+    client = Azure::Storage::Blob::BlobService.create(
+      storage_account_name: 'theglobetrotterslivesto',
+      storage_access_key: Rails.application.credentials.storage[:key]
+    )
+
+    # Find or Create a container
+    containers = client.list_containers(metadata: false, prefix: asset_container_name)
+    container = containers.find { |c| c.name == asset_container_name } ||
+                client.create_container(asset_container_name, public_access_level: 'blob')
+
+    # Upload all files which are not already present
+    current_files = client.list_blobs(container.name).group_by(&:name)
+    Dir.chdir('public/globetrotters-static') do
+      files = Dir.glob('**/*').sort.group_by(&:to_s)
+      files.each_key do |f|
+        next unless File.file?(f)
+
+        if f.end_with?('.br')
+          puts "#{f}: skip brotli compressed file"
+          next
+        end
+
+        if !f.end_with?('.gz') && files.key?("#{f}.gz")
+          puts "#{f}: skip non zipped version"
+          next
+        end
+
+        if f.end_with?('.gz') && files.key?(f[0...-3])
+          puts "#{f}: rename as #{f[0...-3]}"
+          dest_f = f[0...-3]
+          encoding = 'gzip'
+        else
+          dest_f = f
+        end
+
+        if current_files.key?(dest_f)
+          puts "#{f}: skip"
+          next
+        end
+
+        content = ::File.open(f, 'rb', &:read)
+        content_type = MiniMime.lookup_by_filename(dest_f)&.content_type
+        content_type = 'application/json' if content_type.nil? && dest_f.end_with?('.map')
+        if content_type
+          puts "#{f}: transferring"
+          options = {
+            content_type: content_type,
+            content_encoding: encoding,
+            cache_control: 'max-age=31536000'
+          }.compact
+          client.create_block_blob(container.name, dest_f, content, options)
+        else
+          raise "#{f}: failed to detect mime_type. Ignoring"
+        end
+      end
+    end
+  end
+
+  task :docker_login do
+    sh 'az acr login --name theglobetrottersliveregistry'
+  end
+
+  desc 'build docker image'
+  task docker_build: :docker_login do
+    cache = []
+    {
+      'build' => 'theglobetrottersliveregistry.azurecr.io/globetrotter-rails-build:latest',
+      'release' => 'theglobetrottersliveregistry.azurecr.io/globetrotter-rails:latest'
+    }.each do |target, image|
+      cache.push image
+      cache_args =
+        if ENV['RAKE_DOCKER_WITHOUT_CACHE']
+          '--pull --no-cache'
+        else
+          <<~CMD.strip
+            --build-arg BUILDKIT_INLINE_CACHE=1 \
+            #{cache.map { |v| "--cache-from=#{v}" }.join(' ')}
+          CMD
+        end
+      sh <<~CMD.strip
+        docker build . \
+        --target #{target} \
+        --build-arg GIT_SHA1=#{GIT_SHA1} \
+        --build-arg RAILS_MASTER_KEY=#{RAILS_MASTER_KEY} \
+        --build-arg SENTRY_DSN=#{SENTRY_DSN} \
+        --tag #{image} \
+        #{cache_args}
+      CMD
+    end
+  end
+
+  desc 'build and publish docker image'
+  task :docker_setup do
+    Rake::Task['azure:docker_build'].invoke unless ENV['RAKE_WITHOUT_DEPENDENCIES']
+    sh 'docker push theglobetrottersliveregistry.azurecr.io/globetrotter-rails-build'
+    sh 'docker push theglobetrottersliveregistry.azurecr.io/globetrotter-rails'
+  end
+end
+
+namespace :azure_web_app do
+  desc 'Dump database'
+  task :dump_db do
+    user = Rails.application.credentials.postgres[:user]
+    passwd = Rails.application.credentials.postgres[:password]
+    host = Rails.application.credentials.postgres[:host]
+    dbname = 'production'
+    out = "backups/#{Time.now.iso8601}_dump.sql"
+    sh "docker run -e PGPASSWORD=#{passwd} --rm postgres:11 pg_dump -U #{user} --host #{host} --dbname #{dbname} > #{out}"
+  end
+
+  desc 'Deploy the application on Azure Web App: build assets, docker image and push it'
+  multitask deploy: %i[docker_setup db_setup] do
+    Task['azure:asset_setup'].invoke
+  end
+
+  desc 'Retrieve logs from Azure Web App'
+  task :log do
+    r = system 'az webapp log tail --name theglobetrotterslive --resource-group globetrotter-rg'
+    raise 'log failed' unless r
+  end
+
+  desc 'migrate and seed production database'
+  task :db_setup do
+    sh 'RAILS_ENV=production rake db:migrate db:seed'
+  end
+end
+
+namespace :utils do
+  desc 'Wait for postgresql'
+  task :wait_for_pg do
+    connected = false
+    100.times do
+      db_config = Rails.application.config_for(:database)
+      ActiveRecord::Base.establish_connection(db_config).connection
+      puts 'connected to pg'
+      connected = true
+      break
+    rescue ActiveRecord::ConnectionNotEstablished, PG::ConnectionBad => e
+      puts "Connection not yet available #{e.message}. Waiting"
+      sleep 2
+    end
+    raise 'Failed to connect to pg' unless connected
+  end
+end
+
+namespace :dev do
+  desc 'Start the application for dev'
+  task :start do
+    sh '. ./.set_env.sh'
+    sh 'bin/spring stop'
+    [
+      Thread.new { sh 'bin/rails server' },
+      Thread.new { sh 'bin/guard' },
+      Thread.new { sh 'bin/webpack-dev-server' }
+    ].map(&:join)
+  end
+end
+
+namespace :aks do
+  task :aks_login do
+    sh 'az aks get-credentials --name theglobetrotterslive-aks --resource-group globetrotter-rg'
+  end
+
+  task :deploy_dep do
+    Rake::Task['azure:docker_setup'].invoke
+    Rake::Task['azure:asset_setup'].invoke
+  end
+
+  desc 'Build and deploy to aks'
+  task deploy: %i[aks_login] do
+    Rake::Task['azure:docker_dep'].invoke unless ENV['RAKE_WITHOUT_DEPENDENCIES']
+    File.write('charts/theglobetrotters/master.key', RAILS_MASTER_KEY)
+    File.write('charts/theglobetrotters/postgres.password', Rails.application.credentials.postgres[:password])
+    # atomic: wait for resources to be ready and rollback after 5 minutes if it is not the case
+    sh 'helm upgrade theglobetrotterslive --namespace theglobetrotterslive charts/theglobetrotters --atomic'
+  end
+end
+
+namespace :k6 do
+  task :build do
+    sh 'docker build k6/ -t k6'
+  end
+  task run: :build do
+    clear = Rails.application.credentials.http_basic_authenticate.values.join(':')
+    b64_clear = Base64.strict_encode64(clear)
+    sh "docker run --rm -e BASIC_AUTH=#{b64_clear} k6"
+  end
+end

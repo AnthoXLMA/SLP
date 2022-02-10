@@ -1,0 +1,11 @@
+<div class="grouped fields devise left">
+  <%= f.label :tour_language %>
+  <% User::LANGUAGE_NAMES.each do |lang_code, lang_value| %>
+  <div class="field">
+    <div class="ui item checkbox">
+      <%= f.check_box :tour_language, {multiple: true}, lang_code, nil %>
+      <%= label_tag(lang_value) %>
+    </div>
+  </div>
+  <% end %>
+</div>

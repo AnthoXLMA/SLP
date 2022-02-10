@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traefik
+  labels:
+    {{- include "theglobetrotters.traefik.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: 1
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "theglobetrotters.traefik.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/traefik_dynamic_conf: {{ include (print $.Template.BasePath "/_traefik_dynamic_conf.yaml") . | sha256sum }}
+        checksum/traefik_dynamic_cm: {{ include (print $.Template.BasePath "/50_traefik_dynamic_conf.yaml") . | sha256sum }}
+      labels:
+        {{- include "theglobetrotters.traefik.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "theglobetrotters.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: traefik
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.traefik }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+          - "--api.insecure=true" # enable dashboard on port 8080
+          - "--log.level=DEBUG"
+          - "--entrypoints.webinsecure.address=:8081"
+          - "--entrypoints.webinsecure.http.redirections.entryPoint.to=:443"
+          - "--entrypoints.webinsecure.http.redirections.entryPoint.scheme=https"
+          - "--entrypoints.websecure.address=:8443"
+          - "--providers.file.filename=/traefik_dynamic_conf/traefik-dynamic-conf.yaml"
+          - "--providers.file.watch=true"
+          - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+          - "--certificatesresolvers.myresolver.acme.email={{ .Values.tls.email }}"
+          - "--certificatesresolvers.myresolver.acme.storage=/certificates/acme.json"
+          volumeMounts:
+          - name: traefik-dynamic-conf-vol
+            mountPath: "/traefik_dynamic_conf"
+            readOnly: true
+          - name: traefik-storage
+            mountPath: "/certificates" 
+          resources:
+            {{- toYaml .Values.resources.traefik | nindent 12 }}
+      volumes:
+      - name: traefik-dynamic-conf-vol
+        configMap:
+          name: traefik-dynamic-conf
+      - name: traefik-storage
+        persistentVolumeClaim:
+          claimName: azurefile-traefik-storage
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

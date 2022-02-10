@@ -1,0 +1,28 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+event_one:
+  tour: tour_one
+  date: <%= DateTime.now.utc.midnight - 2.days + 3.hours %>
+  zoom_meeting_details: {
+    id: 'zoom_value1',
+    password: 'zoom_value2',
+  }
+  
+event_two:
+  tour: tour_two
+  date: <%= DateTime.now + 5.minutes %>
+  zoom_meeting_details:
+    id: 1
+    password: 'pass'
+
+event_three:
+  tour: tour_one
+  date: <%= DateTime.now.utc.midnight + 5.days + 18.hours %>
+
+event_four:
+  tour: tour_one
+  date: <%= DateTime.now.utc.midnight + 10.days %>
+
+unpublished_event_one:
+  tour: unpublished_tour_one
+  date: <%= DateTime.now.utc.midnight + 10.days %>

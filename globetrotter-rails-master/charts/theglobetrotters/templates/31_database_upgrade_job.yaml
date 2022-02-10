@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: database-upgrade-job
+  labels:
+    {{- include "theglobetrotters.database-upgrade.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "31"
+spec:
+  template:
+    metadata:
+      name: database-upgrade-job
+      labels:
+        {{- include "theglobetrotters.database-upgrade.selectorLabels" . | nindent 8 }}
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: database-upgrade-job
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.railsbuild }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+        - "/bin/sh"
+        - "-c"
+        - "bundle exec rake utils:wait_for_pg && bundle exec rake db:prepare && echo database upgraded"
+        env:
+        - name: RAILS_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rails-secret
+              key: master_key
+        - name: DOCKER_POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: password
+        - name: RAILS_ENV
+          value: production
+        - name: RAILS_LOG_TO_STDOUT
+          value: '1'
+        - name: RAILS_HOST
+          value: {{ .Values.app.hostname }}
+        - name: DOCKER_POSTGRES_HOST
+          value: postgres
+        - name: DOCKER_POSTGRES_SSL
+          value: allow
+        - name: DOCKER_POSTGRES_USER
+          value: postgres
+        resources:
+          {{- toYaml .Values.resources.rails | nindent 12 }}

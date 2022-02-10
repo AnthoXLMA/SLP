@@ -1,0 +1,13 @@
+<div class="ui container">
+<% if @event.can_be_started? %>
+<p><%= t('.instructions') %>: <%= link_to t('.start_your_event'), @event.zoom_meeting_details['start_url'] %></p>
+<%= t('.zoom_credentials') %>
+<div class="ui basic button" id="show_zoom_credentials"><%= t('.show') %></div>
+<pre id="zoom_credentials" class="hidden">
+<%= @event.zoom_license.zoom_user['email'] %>
+<%= @event.zoom_license.zoom_password(@event.tour.guide_id) %>
+</pre>
+<% else %>
+<p><%= t('guide_events.index.wait', minutes_before: Event::BOOK_ZOOM_LICENSE_BEFORE_EVENT_IN_MINUTES) %></p>
+<% end %>
+</div>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="<%= I18n.locale %>">
+  <head>
+    <title>theGlobetrotters.live</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= javascript_pack_tag 'sentry', 'data-turbolinks-track': 'reload' if Rails.env.production? %>
+    <%= stylesheet_pack_tag "application" %>
+    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= favicon_pack_tag('globe_icon.webp') %>
+    <% if @accept_google_analytics == :true %>
+    <% if Rails.env.production? %>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6DG6RX23W2"></script>
+    <script id="google-analytics-script">
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-6DG6RX23W2');
+    </script>
+    <% else %>
+    <!-- Global site tag (gtag.js) - Google Analytics - non production -->
+    <script id="google-analytics-script"></script>
+    <% end %>
+    <% end %>
+  </head>
+  <body>
+    <div id="lang" value="<%= I18n.locale %>" ></div>
+    <div class="site-top" <%= yield :sitetopstyle %> >
+      <div class="ui basic segment">
+        <div class="ui large secondary menu">
+          <%= link_to root_path, class: "header item" do %>
+            <h1 class="title"><span class="smaller">the</span>Globetrotters<span class="smaller">.live</span></h1>
+          <% end %>
+          <div class="right item">
+            <%= link_to t('welcome.board_now'), events_tours_path, class: "header inverted item", style: "color: white;" %>
+            <% if !user_signed_in? %>
+            <!--<div class="ui inverted tiny basic button date"><%= l(Time.now.round, format: :long_with_day) %></div>-->
+            <% case I18n.locale %>
+            <% when :en %>
+            <%= link_to 'Français', request_path('fr'), class: "ui inverted tiny basic button select lang" %>
+            <% when :fr %>
+            <%= link_to 'English', request_path('en'), class: "ui inverted tiny basic button select lang" %>
+            <% else %>
+            <%= link_to 'English', request_path('en'), class: "ui inverted tiny basic button select lang" %>
+            <% end %>
+            <%=link_to t('application.sign_in'), new_user_session_path, class: "ui button signin primary" %>
+            <%=link_to t('application.sign_up'), new_user_registration_path, class: "ui button" %>
+            <% else %>
+            <div class="ui defaultdd dropdown item usermenu">
+              <span class="ui button"><%= current_user.email %><i class="dropdown icon"></i></span>
+              <div class="ui vertical menu">
+                <%= link_to t('application.user_account'), edit_user_registration_path, class: 'item' %>
+                <%= link_to t('application.user_registrations'), event_registrations_path, class: 'item' %>
+                <% if current_user&.guide? %>
+                  <div class="item">
+                    <div class="header"><i class="compass outline icon"></i><%= t('application.guide_admin') %></div>
+                    <%= link_to t('application.guide_description'), guide_path(current_user.allow_strict_loading(&:guide)), class: 'item' %>
+                    <%= link_to t('application.guide_tours'), tours_path, class: 'item' %>
+                    <%= link_to t('application.add_tour'), new_tour_path, class: 'item' %>
+                    <%= link_to t('application.next_guide_event'), guide_events_path, class: 'item' %>
+                    <%= link_to t('application.billing'), guide_events_path, class: 'item' %>
+                  </div>
+                <% end %>
+                <% if current_user&.admin? %>
+                  <div class="item">
+                    <div class="header"><i class="lock icon"></i><%= t('application.admin') %></div>
+                    <%= link_to t('application.list_guides'), guides_path, class: 'item' %>
+                    <%= link_to t('application.add_guide'), new_guide_path, class: 'item' %>
+                    <%= link_to t('application.add_tour'), new_tour_path, class: 'item' %>
+                    <%= link_to t('application.unpublished_tours'), tours_path(unpublished: true, all_guides: true), class: 'item' %>
+                    <%= link_to t('application.next_guide_event'), guide_events_path(show_all: true), class: 'item' %>
+                  </div>
+                <% end %>
+                <%= link_to t('application.disconnect'), destroy_user_session_path, :method => :delete, class: 'item' %>
+              </div>
+            </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <%= yield :sitetop %>
+    </div>
+    <% if notice || alert %>
+    <div class="ui container messages">
+      <% if notice %>
+      <div class="ui message notice info">
+        <i class="close icon"></i>
+        <div class="header"><%= t('application.notice') %></div>
+        <p><%= notice %></p>
+      </div>
+      <% end %>
+      <% if alert %>
+      <div class="ui message alert warning">
+        <i class="close icon"></i>
+        <div class="header"><%= t('application.warning') %></div>
+        <p><%= alert %></p>
+      </div>
+      <% end %>
+    </div>
+    <% end %>
+
+    <% if current_user&.guide? && %>
+    <%   (live_event = current_user.allow_strict_loading(&:guide).allow_strict_loading(&:live_event)) && %>
+    <%   live_event.id != @event&.id %>
+    <%= render 'layouts/live_tour_guide_modal', event: live_event %>
+    <% elsif (live_registration = current_user&.live_registration) && !live_registration.end_visit_date %>
+    <%= render 'layouts/live_tour_modal', live_registration: live_registration %>
+    <% end %>
+
+    <% if @accept_google_analytics.nil? %>
+    <div class="ui raised segment" id="cookie_banner">
+      <div class="ui container">
+        <p>
+        <%= t('application.cookie_banner_1') %>
+        <br>
+        <%= t('application.cookie_banner_learn1') %>
+        <%= link_to(t('application.cookie_banner_link1'), 'https://www.google.com/policies/privacy/') %>
+        <%= t('application.cookie_banner_learn2') %>
+        <%= link_to(t('application.cookie_banner_link2'), 'https://www.google.com/policies/privacy/partners/') %>.
+        </p>
+        <p>
+          <%= t('application.cookie_banner_question') %>
+        </p>
+        <%= link_to(t('application.cookie_banner_reject'), '?accept_google_analytics=false', class: 'ui left attached button secondary') %>
+        <%= link_to(t('application.cookie_banner_accept'), '?accept_google_analytics=true', class: 'ui right attached button primary') %>
+      </div>
+    </div>
+    <% end %>
+
+    <%= yield %>
+    <div class="ui vertical inverted segment">
+      <div class="ui container inverted footer stackable grid divided">
+        <div class="seven wide column">
+          <%= link_to root_path do %>
+            <h1 class="title"><span class="smaller">the</span>Globetrotters<span class="smaller">.live</span></h1>
+          <% end %>
+          <div class="ui inverted horizontal link list socialmedia">
+            <a href="#" class="item"><i class="facebook icon"></i></a>
+            <a href="#" class="item"><i class="twitter icon"></i></a>
+            <a href="#" class="item"><i class="linkedin icon"></i></a>
+            <a href="#" class="item"><i class="instagram icon"></i></a>
+            <a href="#" class="item"><i class="youtube icon"></i></a>
+          </div>
+        </div>
+        <div class="three wide column">
+          <h4>Globetrotters</h4>
+          <div class="ui inverted link list">
+            <a href="#" class="item"><%= t('application.find_a_tour') %></a>
+            <a href="#" class="item"><%= t('application.host_a_tour') %></a>
+            <a href="#" class="item"><%= t('application.join_a_tour') %></a>
+          </div>
+        </div>
+        <div class="three wide column">
+          <h4><%= t('application.help') %></h4>
+          <div class="ui inverted link list">
+            <a href="#" class="item"><%= t('application.faq') %></a>
+            <a href="#" class="item"><%= t('application.about') %></a>
+            <a href="#" class="item"><%= t('application.talk') %></a>
+          </div>
+        </div>
+        <div class="three wide column">
+          <h4><%= t('application.resources') %></h4>
+          <div class="ui inverted link list">
+            <a href="#" class="item"><%= t('application.cookies') %></a>
+            <a href="#" class="item"><%= t('application.privacy') %></a>
+            <%= link_to t('application.terms'), cgu_url, class: 'item' %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

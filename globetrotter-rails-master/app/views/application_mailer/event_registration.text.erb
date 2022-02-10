@@ -1,0 +1,10 @@
+Hello <%= @user.name %>!
+
+<%= t('application_mailer.event_registration_1', guide: @event.tour.guide.user.firstname, tour: @event.tour.title) %>
+
+<%= t('application_mailer.event_registration_2') %> <%= l(@event.date, fomat: :long_with_day) %><%= t('application_mailer.event_registration_3', live_before_event_in_minutes: Event::LIVE_BEFORE_EVENT_IN_MINUTES) %>
+    
+<%= t('application_mailer.event_registration_4') %>
+
+© 2021 theGlobetrotters.live. All rights reserved.
+theGlobetrotters.live SAS - 11 rue Guilloud 69003 Lyon

@@ -1,0 +1,11 @@
+Hello user_one!
+
+Nous sommes au regret de vous annoncer que votre visite TestTour1 prévue le 2022-01-28 03:00:00 UTC ne pourra pas avoir lieu.
+
+Vous pouvez consulter les nouvelles dates pour cette visite ici: http://localhost:3000/fr/tours/1048056776. Elle est planifiée le:
+ - vendredi 04 février à 18h00
+ - mercredi 09 février à 0h00
+
+
+© 2021 theGlobetrotters.live. All rights reserved.
+theGlobetrotters.live SAS - 11 rue Guilloud 69003 Lyon

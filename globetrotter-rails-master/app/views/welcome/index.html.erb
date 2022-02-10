@@ -1,0 +1,67 @@
+<% content_for :sitetopstyle do %>
+style="height: min(80vh, 800px)"
+<% end %>
+<% content_for :sitetop do %>
+<div class="site-description-spacer"></div>
+<div class="site-description-container" >
+  <div class="ui two column centered doubling grid container">
+    <div class="column">
+      <div class="site-description">
+      <h2><%= t('welcome.main_title') %></h2>
+      <%= t('welcome.main_description') %>
+      </div>
+    </div>
+    <div class="three column centered row">
+      <div class="column boardnow-container">
+        <a href="<%= events_tours_path %>" class="ui huge button primary board"><%= t('welcome.board_now') %><i class="icon right arrow"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="site-description-spacer"></div>
+<% end %>
+<h2 id="choose-one-of-our-tours" class="ui segment site-section">
+<%= t('welcome.choose_one_tour') %>
+</h2>
+<div class="ui container">
+  <%= render 'tours/tours', items: @tours %>
+</div>
+<h2 class="ui segment site-section">
+<%= t('welcome.become_a_globetrotter') %>
+</h2>
+<div class="ui four column doubling grid container gt-description">
+  <div class="column">
+    <%= image_pack_tag 'girl_grandma.webp' %>
+    <h4><%= t('welcome.accessible') %></h4>
+  </div>
+  <div class="column">
+    <%= image_pack_tag 'crowd.webp' %>
+    <h4><%= t('welcome.sustainable') %></h4>
+  </div>
+  <div class="column">
+    <%= image_pack_tag 'globe.webp' %>
+    <h4><%= t('welcome.no_stress') %></h4>
+  </div>
+  <div class="column">
+    <%= image_pack_tag 'peruvian.webp' %>
+    <h4><%= t('welcome.promote_locals') %></h4>
+  </div>
+</div>
+<h2 class="ui segment site-section">
+  <%= t('welcome.fasten_seat_belt') %>
+</h2>
+<div class="ui two column stackable grid container">
+  <div class="column comments">
+    <%= image_pack_tag 'matchu.webp' %>
+  </div>
+  <div class="column quotes">
+    <div class="comment">
+      <h3><%= t('welcome.quote_1') %></h3>
+      <%= image_pack_tag 'avatar_tom.webp', class: "ui avatar image" %><b>Tom</b> <%= t('welcome.quote_1_after') %>
+    </div>
+    <div class="comment">
+      <h3><%= t('welcome.quote_2') %></h3>
+      <%= image_pack_tag 'avatar_nan.webp', class: "ui avatar image" %><b>Marie</b> <%= t('welcome.quote_2_after') %>
+    </div>
+  </div>
+</div>

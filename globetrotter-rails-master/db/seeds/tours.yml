@@ -1,0 +1,79 @@
+- id: 1
+  title: Amsterdam
+  subtitle: Pays-Bas
+  country: NL
+  image: amsterdam.webp
+  description: Visitez les canaux
+  guide: Elioth
+  short_description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  duration_min: 45
+  description: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+- id: 2
+  title: Marakech
+  subtitle: Maroc
+  country: MA
+  image: marakech.webp
+  description: Visite de la ville
+  guide: Mehdi
+  short_description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  duration_min: 45
+  description: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+- id: 3
+  title: Tyrol
+  subtitle: Autriche
+  country: AT
+  image: tyrol.webp
+  description: Nature Alpine
+  guide: Peter
+  short_description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  duration_min: 60
+  description: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+- id: 4
+  title: Tokyo
+  subtitle: Japon
+  country: JP
+  image: tokyo.webp
+  description: Quartier d'affaire
+  guide: Rima
+  short_description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  duration_min: 30
+  description: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+- id: 5
+  title: Saint Petersbourg
+  subtitle: Russie
+  country: RU
+  image: StPetersbourg.webp
+  description: Promenade sur la Neva
+  guide: Anna
+  short_description: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+  duration_min: 30
+  description: |
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+- id: 6
+  title: City of Lights
+  subtitle: Paris - France
+  short_description: |
+    Discover why Paris is the City of lights from the 15th and how it appears in the architectural style of the city until now.
+  duration_min: 60
+  description: |
+    The Louvre is not only the most visited museum in the world, but it is also the biggest building in Paris with 800 years of history! 
+    A fortress built to protect Paris at its origin, the Louvre became a royal palace in 1380 and was the house of the kings in Paris until 1682. Many different rulers refurbished and added to the building which has now 407 rooms containing 380,000 works of art! 
+    We will discover the different architectural styles of the palace and learn about the different stages of its construction, highlighting that Paris really is a mix of old and new architecture - the famous glass pyramid being a prime example. 
+    Combined with the now-destroyed Palace of the Tuileries nearby, the Louvre was even bigger than it is today. Our tour will take in the nearby the Arc de Triomphe du Carrousel and the beautiful UNESCO world heritage gardens. This is a tour for architecture, history and garden fans alike!
+  country: FR
+  image: paris.webp
+  guide: Christophe

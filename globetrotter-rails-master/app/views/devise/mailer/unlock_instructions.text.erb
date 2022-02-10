@@ -1,0 +1,7 @@
+<%= t('.greeting', recipient: @resource.name) %>
+
+<%= t('.message') %>
+
+<%= t('.instruction') %>
+
+<%= link_to t('.action'), unlock_url(@resource, unlock_token: @token) %>

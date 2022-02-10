@@ -1,0 +1,30 @@
+<div class="page_with left_margin">
+  <div class="content">
+  <% if @transaction["Status"] == "SUCCEEDED" %>
+    <div class="large column">
+      <h2 class="ui header">
+        <div class="content">
+          <%= t('events.successful_payment') %>
+        </div>
+      </h2>
+      <div class="large column">
+        <%= t('events.tip_success_description_html') %><br><br>
+        <a class="ui large button" style="margin-top: 20px; margin-bottom: 20px;" href="/tours"><%= t('events.view_tours') %></a><br>
+      </div>
+    </div>
+  <% else %>
+    <div class="large column">
+      <h2 class="ui header">
+        <div class="content">
+          <%= t('events.payment_error') %>
+        </div>
+      </h2>
+    </div>
+    <div class="large column">
+      <%= t('events.an_error_occured', error: @transaction["ResultMessage"] ) %><br><br>
+      <a class="ui large button" style="margin-top: 20px; margin-bottom: 20px;" href="<%= tip_event_registration_path(@event_registration) %>"><%= t('events.retry') %></a><br>
+    </div>
+  <% end %>
+  </div>
+</div>
+  

@@ -1,0 +1,23 @@
+  <div class="form column">
+    <div class="ui segment">
+      <h2 class="ui header"><%= t('.resend_unlock_instructions') %></h2>
+
+      <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post, class: %W[ui large form] }) do |f| %>
+      <div class="ui error message">
+        <%= render "devise/shared/error_messages", resource: resource %>
+      </div>
+
+      <div class="field devise left">
+        <%= f.label :email %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: t('activerecord.attributes.user.email') %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit t('.resend_unlock_instructions'), class: %W[ui primary submit button] %>
+      </div>
+      <% end %>
+    </div>
+    <div class="ui message left devise">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>

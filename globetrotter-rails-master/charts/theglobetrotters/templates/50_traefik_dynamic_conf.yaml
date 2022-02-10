@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-dynamic-conf
+data:
+  traefik-dynamic-conf.yaml: |
+    {{- include "traefik_dynamic_conf.yaml" . | nindent 4 }}

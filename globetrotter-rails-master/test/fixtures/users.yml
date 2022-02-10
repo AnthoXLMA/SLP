@@ -1,0 +1,62 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# This model initially had no columns defined. If you add columns to the
+# model remove the '{}' from the fixture names and add the columns immediately
+# below each fixture, per the syntax in the comments below
+#
+guide_one:
+  firstname: 'guide_one'
+  email: 'guide_one@test.com'
+  encrypted_password: <%= User.new.send(:password_digest, '123456') %>
+  confirmed_at: <%= DateTime.now - 1.day %>
+  guides_count: 1
+  language: 'en'
+  tour_language: ['en']
+
+guide_two:
+  firstname: 'guide_two'
+  email: 'guide_two@test.com'
+  encrypted_password: <%= User.new.send(:password_digest, '123456') %>
+  confirmed_at: <%= DateTime.now - 1.day %>
+  guides_count: 1
+  language: 'en'
+  tour_language: ['en']
+
+guide_three:
+  firstname: 'guide_three'
+  email: 'guide_three@test.com'
+  encrypted_password: <%= User.new.send(:password_digest, '123456') %>
+  confirmed_at: <%= DateTime.now - 1.day %>
+  language: 'en'
+  tour_language: ['en']
+  guides_count: 1
+
+user_one:
+  firstname: 'user_one'
+  email: 'user_one@test.com'
+  encrypted_password: <%= User.new.send(:password_digest, '123456') %>
+  confirmed_at: <%= DateTime.now - 1.day %>
+  guides_count: 0
+  timezone: 'Pacific/Pago_Pago'
+  language: 'fr'
+  tour_language: ['fr']
+
+user_two:
+  firstname: 'user_two'
+  email: 'user_two@test.com'
+  encrypted_password: <%= User.new.send(:password_digest, '123456') %>
+  confirmed_at: <%= DateTime.now - 1.day %>
+  guides_count: 0
+  language: 'en'
+  tour_language: ['en']
+
+admin:
+  admin: true
+  firstname: 'admin'
+  email: 'admin@test.com'
+  encrypted_password: <%= User.new.send(:password_digest, '123456') %>
+  confirmed_at: <%= DateTime.now - 1.day %>
+  guides_count: 0
+  language: 'en'
+  tour_language: ['en']
+
