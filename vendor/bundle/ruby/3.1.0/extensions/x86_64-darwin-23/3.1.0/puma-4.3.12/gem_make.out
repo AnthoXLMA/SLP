@@ -1,0 +1,72 @@
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/puma-4.3.12/ext/puma_http11
+/Users/anthony/.rbenv/versions/3.1.2/bin/ruby -I /Users/anthony/.rbenv/versions/3.1.2/lib/ruby/3.1.0 -r ./siteconf20240516-98481-j0swnk.rb extconf.rb
+checking for BIO_read() in -lcrypto... yes
+checking for SSL_CTX_new() in -lssl... yes
+checking for openssl/bio.h... yes
+checking for DTLS_method() in openssl/ssl.h... yes
+checking for TLS_server_method() in openssl/ssl.h... yes
+checking for SSL_CTX_set_min_proto_version in openssl/ssl.h... yes
+checking for Random.bytes... yes
+creating Makefile
+
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/puma-4.3.12/ext/puma_http11
+make DESTDIR\= clean
+
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/puma-4.3.12/ext/puma_http11
+make DESTDIR\=
+compiling http11_parser.c
+ext/puma_http11/http11_parser.c:44:18: warning: unused variable 'puma_parser_en_main' [-Wunused-const-variable]
+static const int puma_parser_en_main = 1;
+                 ^
+1 warning generated.
+compiling io_buffer.c
+compiling mini_ssl.c
+mini_ssl.c:111:8: warning: 'DH_new' is deprecated [-Wdeprecated-declarations]
+  dh = DH_new();
+       ^
+/usr/local/opt/openssl@3/include/openssl/dh.h:210:1: note: 'DH_new' has been explicitly marked deprecated here
+OSSL_DEPRECATEDIN_3_0 DH *DH_new(void);
+^
+/usr/local/opt/openssl@3/include/openssl/macros.h:194:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+#   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+                                                ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+#     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+                                                   ^
+mini_ssl.c:125:34: warning: 'DH_set0_pqg' is deprecated [-Wdeprecated-declarations]
+  if (p == NULL || g == NULL || !DH_set0_pqg(dh, p, NULL, g)) {
+                                 ^
+/usr/local/opt/openssl@3/include/openssl/dh.h:266:1: note: 'DH_set0_pqg' has been explicitly marked deprecated here
+OSSL_DEPRECATEDIN_3_0 int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+^
+/usr/local/opt/openssl@3/include/openssl/macros.h:194:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+#   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+                                                ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+#     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+                                                   ^
+mini_ssl.c:126:5: warning: 'DH_free' is deprecated [-Wdeprecated-declarations]
+    DH_free(dh);
+    ^
+/usr/local/opt/openssl@3/include/openssl/dh.h:211:1: note: 'DH_free' has been explicitly marked deprecated here
+OSSL_DEPRECATEDIN_3_0 void DH_free(DH *dh);
+^
+/usr/local/opt/openssl@3/include/openssl/macros.h:194:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+#   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+                                                ^
+/usr/local/opt/openssl@3/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+#     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+                                                   ^
+mini_ssl.c:166:7: warning: unused variable 'min' [-Wunused-variable]
+  int min, ssl_options;
+      ^
+mini_ssl.c:334:40: warning: function 'raise_error' could be declared with attribute 'noreturn' [-Wmissing-noreturn]
+void raise_error(SSL* ssl, int result) {
+                                       ^
+5 warnings generated.
+compiling puma_http11.c
+linking shared-object puma/puma_http11.bundle
+
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/puma-4.3.12/ext/puma_http11
+make DESTDIR\= install
+/usr/local/bin/ginstall -c -m 0755 puma_http11.bundle ./.gem.20240516-98481-l0chbf/puma

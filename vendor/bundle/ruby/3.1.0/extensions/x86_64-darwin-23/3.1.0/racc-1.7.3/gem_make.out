@@ -1,0 +1,15 @@
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/racc-1.7.3/ext/racc/cparse
+/Users/anthony/.rbenv/versions/3.1.2/bin/ruby -I /Users/anthony/.rbenv/versions/3.1.2/lib/ruby/3.1.0 -r ./siteconf20240516-98481-d5royp.rb extconf.rb
+creating Makefile
+
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/racc-1.7.3/ext/racc/cparse
+make DESTDIR\= clean
+
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/racc-1.7.3/ext/racc/cparse
+make DESTDIR\=
+compiling cparse.c
+linking shared-object racc/cparse.bundle
+
+current directory: /Users/anthony/code/AnthoXLMA/SLP/vendor/bundle/ruby/3.1.0/gems/racc-1.7.3/ext/racc/cparse
+make DESTDIR\= install
+/usr/local/bin/ginstall -c -m 0755 cparse.bundle ./.gem.20240516-98481-9ny698/racc
