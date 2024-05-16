@@ -1,9 +1,0 @@
-<div class="ui container">
-<h1 class="ui header">All guides:</h1>
-
-<ul>
-<% @guides.each do |guide| %>
-<li><% if !guide.published %><i class="eye slash outline icon"></i> - <% end %><%= link_to "#{guide.user.firstname} #{guide.user.lastname}", guide_path(guide) %></li>
-<% end %>
-</ul>
-</div>
