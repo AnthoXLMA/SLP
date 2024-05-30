@@ -1,0 +1,113 @@
+.cards {
+  width:400px;
+  box-shadow:0 0 15px rgba(0,0,0,0.2);
+  background:white;
+  margin-right:10px;
+  margin-left:10px;
+
+  img {
+    height:300px;
+    width:100%;
+    object-fit:cover;
+  }
+  .card-text {
+    width:100%;
+
+    h1{
+      color:black;
+      font-weight:bold;
+      text-align:center;
+      font-size: 30px;
+      font-family: oswald;
+    }
+    h2{
+      color:black;
+      font-weight:bold;
+      font-size: 20px;
+      text-align:center;
+      font-family: oswald;
+    }
+    p{
+      color:black;
+      font-weight:10px;
+      text-align:center;
+      font-family:Athiti;
+    }
+  }
+}
+
+.cards-1 {
+  width:250px;
+  box-shadow:0 0 15px rgba(0,0,0,0.2);
+  background:white;
+  margin-right:auto;
+  margin-left:auto;
+
+  img {
+    height:250px;
+    width:100%;
+    object-fit:cover;
+  }
+  .card-text {
+    width:100%;
+
+    h1{
+      color:black;
+      font-weight:bold;
+      text-align:center;
+      font-size: 30px;
+      font-family: oswald;
+    }
+    h2{
+      color:black;
+      font-weight:bold;
+      font-size: 20px;
+      text-align:center;
+      font-family: oswald;
+    }
+    p{
+      color:black;
+      font-weight:10px;
+      text-align:center;
+      font-family:Athiti;
+    }
+  }
+}
+
+.cards-unique {
+  width:800px;
+  box-shadow:0 0 15px rgba(0,0,0,0.2);
+  background:white;
+  margin-right:auto;
+  margin-left:30px;
+
+  img {
+    height:250px;
+    width:100%;
+    object-fit:cover;
+  }
+  .card-text {
+    width:100%;
+
+    h1{
+      color:black;
+      font-weight:bold;
+      text-align:center;
+      font-size: 30px;
+      font-family: oswald;
+    }
+    h2{
+      color:black;
+      font-weight:bold;
+      font-size: 20px;
+      text-align:center;
+      font-family: oswald;
+    }
+    p{
+      color:black;
+      font-weight:10px;
+      text-align:center;
+      font-family:Athiti;
+    }
+  }
+}

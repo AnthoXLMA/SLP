@@ -1,0 +1,41 @@
+.card-container {
+  display:flex;
+  // align-content:space-between;
+  margin-top:30px;
+  margin-right:20px;
+  // margin-left:auto;
+}
+
+.rdv-square {
+  background-color:#235ba7;
+  width:900px;
+  height:35px;
+  margin-top:50px;
+  margin-bottom:50px;
+  margin-left:auto;
+  margin-right:auto;
+  text-align:center;
+  align-items:baseline;
+
+  a {
+    color:white;
+    font-family:Athiti;
+    font-size: 25px;
+    font-weight:bold;
+
+  }
+  a:hover{
+    text-decoration: none;
+    color:black;
+  }
+}
+
+.resume {
+  margin-left:30px;
+  h1{
+    color:black;
+    font-family:oswald;
+    font-size: 50px;
+    font-weight:bold;
+  }
+}
